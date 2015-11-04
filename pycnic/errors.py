@@ -1,9 +1,9 @@
 from .data import STATUSES
 
-class PycroError(Exception):
+class PycnicError(Exception):
     pass
 
-class HTTPError(Exception):
+class HTTPError(PycnicError):
     status_code = 0
     status = None
     message = None

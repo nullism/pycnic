@@ -8,6 +8,12 @@ from .data import STATUSES
 from . import errors
 
 
+class Handler(object):
+
+    request = None
+    response = None 
+
+
 class Request(object):
 
     _body = None
@@ -83,8 +89,10 @@ class WSGI:
     after = None
         
     def __init__(self, environ, start_response):
+
         if not self.logger:
             self.logger = logging.Logger(__name__)
+
         self.logger.info("__init__ called")
 
         self.request = Request(
@@ -99,7 +107,6 @@ class WSGI:
 
         self.environ = environ
         self.start = start_response
-                
         self.response.set_header("Content-Type", "application/json")
        
             
@@ -127,8 +134,6 @@ class WSGI:
             else:
                 resp = { "error": "Internal server error encountered." }
             
-        # return value can be a string or a list. we should be able to 
-        # return an iter in both the cases.
         if isinstance(resp, dict):
             return iter([json.dumps(resp).encode('utf-8')])
         elif isinstance(resp, str):
@@ -165,9 +170,5 @@ class WSGI:
                 return output
                                
         raise errors.HTTP_404("Path %s not found"%(path))
-
-class Handler(object):
-    request = None
-    response = None 
 
 
