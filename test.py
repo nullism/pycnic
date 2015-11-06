@@ -2,6 +2,8 @@
 from pycnic.core import WSGI, Handler
 from pycnic.errors import HTTPError
 
+
+
 def before(handler):
     if handler.request.ip in ['1.2.3.4', '5.6.7.8']:
         raise HTTPError(401, "Hey! You're banned from here.")        

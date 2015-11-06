@@ -78,6 +78,7 @@ class Response(object):
     def status(self):
         if self.status_code in STATUSES:
             return STATUSES[self.status_code]
+        print("Warning! Status %s does not exist!"%(self.status_code))
         return STATUSES[577]
 
 class WSGI:

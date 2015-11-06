@@ -33,6 +33,12 @@ class HTTPNumeric(HTTPError):
         self.message = message
         self.data = data
 
+class HTTP_401(HTTPNumeric):
+    status_code = 401
+
+class HTTP_403(HTTPNumeric):
+    status_code = 403
+
 class HTTP_404(HTTPNumeric):
     status_code = 404
     
