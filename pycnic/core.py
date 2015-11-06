@@ -17,7 +17,8 @@ class Handler(object):
 class Request(object):
 
     _body = None
-    _data = None
+    _data = {}
+    _cookies = {}
 
     def __init__(self, path, method, environ):
         self.path = path
@@ -38,13 +39,29 @@ class Request(object):
         return self._body
 
     @property
+    def cookies(self):
+        if self._cookies:
+            return self._cookies
+
+        if 'HTTP_COOKIE' in self.environ:
+            for cookie_line in self.environ['HTTP_COOKIE'].split(';'):
+                cname, cvalue = cookie_line.strip().split('=',1)
+                self._cookies[cname] = cvalue
+            return self._cookies
+
+        return {}
+
+    @property
     def data(self):
         if self._data:
             return self._data
         if self.body:
-            self._data = json.loads(self.body.decode('utf-8'))
-            return self._data
-        return None
+            try:
+                self._data = json.loads(self.body.decode('utf-8'))
+                return self._data
+            except Exception:
+                raise errors.HTTP_400("Expected JSON in request body")
+        return {}
 
     @property
     def ip(self):
@@ -59,6 +76,7 @@ class Response(object):
         "Content-Type": "application/json"
     }
 
+    cookie_dict = {}
     _headers = []
 
     def __init__(self, status_code):
@@ -66,12 +84,18 @@ class Response(object):
 
     def set_header(self, key, value):
         self.header_dict[key] = value
+
+    def set_cookie(self, key, value, expires='', path='/'):
+        value = value.replace(";","") # ; not allowed
+        self.cookie_dict[key] = "%s; path=%s"%(value, path)
         
     @property
     def headers(self):
         self._headers = []
         for k,v in self.header_dict.items():
             self._headers.append((k, v))
+        for k,v in self.cookie_dict.items():
+            self._headers.append(('Set-Cookie', '%s=%s'%(k,v)))
         return self._headers
 
     @property
@@ -88,6 +112,7 @@ class WSGI:
     logger = None
     before = None
     after = None
+    strip_path = True
         
     def __init__(self, environ, start_response):
 
@@ -96,8 +121,12 @@ class WSGI:
 
         self.logger.info("__init__ called")
 
+        path = environ["PATH_INFO"]
+        if self.strip_path and len(path) > 1 and path.endswith("/"):
+            path = path[0:-1]
+
         self.request = Request(
-            path=environ["PATH_INFO"],
+            path=path,
             method=environ["REQUEST_METHOD"],
             environ=environ
         )

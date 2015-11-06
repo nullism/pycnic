@@ -16,10 +16,13 @@ class IndexHandler(Handler):
             "path":self.request.path,
             "requestBody":self.request.body,
             "status":self.response.status,
-            "clientIp":self.request.ip
+            "clientIp":self.request.ip,
+            "cookies":self.request.cookies,
         }
 
     def post(self):
+        data = self.request.data
+        self.response.status_code = 201
         return { 
             "message":"thanks for the datas"
         }    

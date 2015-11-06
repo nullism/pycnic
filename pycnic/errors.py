@@ -33,6 +33,9 @@ class HTTPNumeric(HTTPError):
         self.message = message
         self.data = data
 
+class HTTP_400(HTTPNumeric):
+    status_code = 400
+
 class HTTP_401(HTTPNumeric):
     status_code = 401
 
