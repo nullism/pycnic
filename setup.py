@@ -10,10 +10,11 @@ from pycnic import __version__
 setup(name='pycnic',
     version = __version__,
     description = 'A simple, ultra light-weight, pure-python RESTful JSON API framework.',
-    long_description = '''
-    Pycnic offers a fully WSGI compliant JSON only web framework for quickly creating fast, modern web applications
-    based on AJAX. Static files are served over a CDN or with a standard webserver, like Apache.
-    ''',
+    long_description = (
+        'Pycnic offers a fully WSGI compliant JSON only web framework for '
+        'quickly creating fast, modern web applications '
+        'based on AJAX. Static files are served over a CDN or ' 
+        'with a standard webserver, like Apache.'),
     author = 'Aaron Meier',
     author_email = 'webgovernor@gmail.com',
     packages = ['pycnic'],
