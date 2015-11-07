@@ -48,5 +48,8 @@ class HTTP_404(HTTPNumeric):
 class HTTP_405(HTTPNumeric):
     status_code = 405
 
+class HTTP_408(HTTPNumeric):
+    status_code = 408
+
 class HTTP_500(HTTPNumeric):
     status_code = 500
