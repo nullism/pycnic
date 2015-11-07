@@ -1,8 +1,17 @@
 #!/usr/bin/env python3
+import sys; sys.path.insert(0, '../')
 from pycnic.core import WSGI, Handler
 from pycnic.errors import HTTP_400, HTTP_401
 
 class Login(Handler):
+
+    def get(self):
+        cookie = self.request.cookies.get("session_id")
+        if cookie:
+            print("Found session_id: %s"%(cookie))
+        return { 
+            "Session_ID":cookie
+        }
 
     def post(self):
 
@@ -12,23 +21,26 @@ class Login(Handler):
         if not username or not password:
             raise HTTP_400("Username and password are required")
 
-        if username != "foo" and password != "foo":
+        if username != "foo" or password != "foo":
             raise HTTP_401("Username or password are incorrect")
 
         # Set a session ID for lookup in a DB or memcache
         self.response.set_cookie("session_id", "1234567890abcdefg")
         return { "message":"Logged in" }
 
-def Logout(Handler):
+class Logout(Handler):
 
     def post(self):
 
         if self.request.cookies.get("session_id"):
             # Clear the cookie
-            self.response.set_cookie("session_id", "")
+            self.response.delete_cookie("session_id")
             return { "message":"Logged out" }
 
-        return { "message":"Already logged out" }
+        return { 
+            "message":"Already logged out", 
+            "cookies":self.request.cookies 
+        }
 
 class app(WSGI):
     routes = [

@@ -16,11 +16,13 @@ class Handler(object):
 
 class Request(object):
 
-    _body = None
-    _data = {}
-    _cookies = {}
 
     def __init__(self, path, method, environ):
+        # Defaults
+        self._cookies = {}
+        self._body = None
+        self._data = {} 
+
         self.path = path
         self.method = method.upper()
         self.environ = environ
@@ -45,6 +47,8 @@ class Request(object):
 
         if 'HTTP_COOKIE' in self.environ:
             for cookie_line in self.environ['HTTP_COOKIE'].split(';'):
+                if "DELETED" in cookie_line:
+                    continue
                 cname, cvalue = cookie_line.strip().split('=',1)
                 self._cookies[cname] = cvalue
             return self._cookies
@@ -76,19 +80,23 @@ class Response(object):
         "Content-Type": "application/json"
     }
 
-    cookie_dict = {}
-    _headers = []
-
     def __init__(self, status_code):
+        self._headers = []
+        self.cookie_dict = {}
         self.status_code = status_code
 
     def set_header(self, key, value):
         self.header_dict[key] = value
 
-    def set_cookie(self, key, value, expires='', path='/'):
+    def set_cookie(self, key, value, expires="", path='/'):
         value = value.replace(";","") # ; not allowed
-        self.cookie_dict[key] = "%s; path=%s"%(value, path)
+        if expires:
+            expires = "expires=%s; "%(expires)
+        self.cookie_dict[key] = "%s;%s path=%s"%(value, expires, path)
         
+    def delete_cookie(self, key):
+        self.set_cookie(key, "DELETED", expires="Thu, 01 Jan 1970 00:00:00 GMT")
+
     @property
     def headers(self):
         self._headers = []
