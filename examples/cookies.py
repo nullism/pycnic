@@ -6,12 +6,8 @@ from pycnic.errors import HTTP_400, HTTP_401
 class Login(Handler):
 
     def get(self):
-        cookie = self.request.cookies.get("session_id")
-        if cookie:
-            print("Found session_id: %s"%(cookie))
-        return { 
-            "Session_ID":cookie
-        }
+        sess_id = self.request.cookies.get("session_id")
+        return { "session_id":sess_id }
 
     def post(self):
 
