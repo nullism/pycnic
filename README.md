@@ -1,6 +1,26 @@
-# Pycnic Framework
+![HUG](http://pycnic.nullism.com/images/pycnic-head-small.png)
+============================
 
-For the latest documentation checkout [pycnic.nullism.com](http://pycnic.nullism.com/docs). 
+# Docs
+
+[pycnic.nullism.com/docs](http://pycnic.nullism.com/docs)
+
+# Example
+
+```python
+# example.py
+from pycnic.core import WSGI, Handler
+
+class Hello(Handler):
+    def get(self, name="World"):
+        return { "message":"Hello, %s!"%(name) }
+
+class app(WSGI):
+    routes = [
+        ('/', Hello()),
+        ('/([\w]+)', Hello())
+    ]
+```
 
 # Installation
 
