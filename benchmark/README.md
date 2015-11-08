@@ -13,7 +13,7 @@ The benchmarks perform the following framework-specific tasks.
 
 ## Methods
 
-All WSGI frameworks are hosted with Gunicorn. 
+All WSGI frameworks are hosted with Gunicorn (single worker). 
 
     gunicorn <framework>_test:app
 
@@ -28,6 +28,7 @@ The actual testing is performed with `ab`.
 * **bobo** was hosted with the built-in `bobo -f bobo_test.py -p 8000` due to the lack of documentation. It may perform better
     using Gunicorn.
 * **morepath** was disqualified for numerous errors and complexity issues. Interestingly enough, it installs through pip but does not uninstall.
+* **hug** was ran using the `hug` script provided by the package.
 
 ## Results
 
@@ -35,6 +36,7 @@ The actual testing is performed with `ab`.
 * **bottle** - 2130.21/sec, 2.386s
 * **pyramid** - 1773.52/sec, 2.819s
 * **bobo** - 1555.34/sec, 3.215s 
+* **hug** - 1550.79/sec, 3.224s
 * **flask** - 1414.67/sec, 5.531s
 * **tornado** - 1341.86/sec, 3.762s
 * **muffin** - 1080.41/sec, 4.628s
