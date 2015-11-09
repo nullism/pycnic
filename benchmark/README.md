@@ -1,5 +1,11 @@
 # Framework Benchmarks
 
+**UPDATE** - Further research has helped me figure out how to run 
+more of the tests in Gunicorn. Given that, I've decided to use 
+two workers instead of just one for these tests. 
+
+
+
 The benchmarks perform the following framework-specific tasks.
 
 1. Route '/json' to a method.
@@ -34,15 +40,36 @@ The actual testing is performed with `ab`.
 
 [Chart](http://pycnic.nullism.com/images/pycnic-bench.png)
 
-* **falcon (cython)** - 2357.61/sec, 2.121s
-* **pycnic** - 2130.55/sec, 2.379s
-* **bottle** - 2130.21/sec, 2.386s
-* **pyramid** - 1773.52/sec, 2.819s
-* **bobo** - 1555.34/sec, 3.215s 
-* **hug** - 1550.79/sec, 3.224s
-* **flask** - 1414.67/sec, 5.531s
+Output from `runner.sh` (for tests working with WSGI):
+
+    :::text
+    Test results:
+
+    falcon_test:
+        Requests per second:    2993.24 [#/sec] (mean)
+        Complete requests:      5000
+    pycnic_test:
+        Requests per second:    3175.99 [#/sec] (mean)
+        Complete requests:      5000
+    cherrypy_test:
+        Requests per second:    1564.35 [#/sec] (mean)
+        Complete requests:      5000
+    pyramid_test:
+        Requests per second:    2788.13 [#/sec] (mean)
+        Complete requests:      5000
+    hug_test:
+        Requests per second:    1218.59 [#/sec] (mean)
+        Complete requests:      5000
+    flask_test:
+        Requests per second:    1980.06 [#/sec] (mean)
+        Complete requests:      5000
+    bottle_test:
+        Requests per second:    3161.83 [#/sec] (mean)
+        Complete requests:      5000
+
+Manually running tests for the others:
+
 * **tornado** - 1341.86/sec, 3.762s
 * **muffin** - 1080.41/sec, 4.628s
-* **cherrypy** - 994.73/sec, 5.026s
 
 

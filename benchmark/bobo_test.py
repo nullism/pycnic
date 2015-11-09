@@ -4,4 +4,4 @@ import bobo
 def json():
     return { "message":"Hello, world!" }
 
-
+app = bobo.Application(bobo_resources=__name__)
