@@ -88,11 +88,13 @@ class Response(object):
     def set_header(self, key, value):
         self.header_dict[key] = value
 
-    def set_cookie(self, key, value, expires="", path='/'):
+    def set_cookie(self, key, value, expires="", path='/', domain=""):
         value = value.replace(";","") # ; not allowed
         if expires:
             expires = "expires=%s; "%(expires)
-        self.cookie_dict[key] = "%s;%s path=%s"%(value, expires, path)
+        if domain:
+            domain = "Domain=%s; "%(domain)
+        self.cookie_dict[key] = "%s;%s%s path=%s"%(value, domain, expires, path)
         
     def delete_cookie(self, key):
         self.set_cookie(key, "DELETED", expires="Thu, 01 Jan 1970 00:00:00 GMT")
