@@ -34,6 +34,7 @@ The actual testing is performed with `ab`.
 
 [Chart](http://pycnic.nullism.com/images/pycnic-bench.png)
 
+* **falcon (cython)** - 2357.61/sec, 2.121s
 * **pycnic** - 2130.55/sec, 2.379s
 * **bottle** - 2130.21/sec, 2.386s
 * **pyramid** - 1773.52/sec, 2.819s
