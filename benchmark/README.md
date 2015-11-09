@@ -42,6 +42,8 @@ The actual testing is performed with `ab`.
 
 Output from `runner.sh` (for tests working with WSGI):
 
+*Note: Falcon is running with Cython enabled, which provides a slight advantage*
+
     :::text
     Test results:
 
