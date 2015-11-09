@@ -32,6 +32,8 @@ The actual testing is performed with `ab`.
 
 ## Results
 
+[Chart](http://pycnic.nullism.com/images/pycnic-bench.png)
+
 * **pycnic** - 2130.55/sec, 2.379s
 * **bottle** - 2130.21/sec, 2.386s
 * **pyramid** - 1773.52/sec, 2.819s
