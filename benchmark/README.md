@@ -31,10 +31,7 @@ The actual testing is performed with `ab`.
 
 * **tornado** was hosted using the built-in IOLoop.
 * **muffin** was hosted with `muffin muffin_test run` due to various errors attempting to get it working with Gunicorn.
-* **bobo** was hosted with the built-in `bobo -f bobo_test.py -p 8000` due to the lack of documentation. It may perform better
-    using Gunicorn.
 * **morepath** was disqualified for numerous errors and complexity issues. Interestingly enough, it installs through pip but does not uninstall.
-* **hug** was ran using the `hug` script provided by the package.
 
 ## Results
 
