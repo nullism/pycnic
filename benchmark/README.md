@@ -16,12 +16,22 @@ The benchmarks perform the following framework-specific tasks.
 
 1. The app MUST work under Python3.
 
+## Running the tests
+
+You'll need to install all specified frameworks. Python 3 was used.
+
+    pip3 install bobo bottle cherrypy hug falcon pycnic pyramid gunicorn
+
+Then:
+
+    $ cd /path/to/pycnic/benchmarks
+    $ ./runner.sh
 
 ## Methods
 
 All WSGI frameworks are hosted with Gunicorn (single worker). 
 
-    gunicorn <framework>_test:app
+    gunicorn -w 2 <framework>_test:app
 
 The actual testing is performed with `ab`. 
 
