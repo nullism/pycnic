@@ -44,30 +44,31 @@ Output from `runner.sh` (for tests working with WSGI):
 
 *Note: Falcon is running with Cython enabled, which provides a slight advantage*
 
-    :::text
-    Test results:
 
+    Test results:
+    
     falcon_test:
-        Requests per second:    2993.24 [#/sec] (mean)
-        Complete requests:      5000
+    	Requests per second:    3354.99 [#/sec] (mean)
+    	Complete requests:      5000
     pycnic_test:
-        Requests per second:    3175.99 [#/sec] (mean)
-        Complete requests:      5000
+    	Requests per second:    3183.22 [#/sec] (mean)
+    	Complete requests:      5000
     cherrypy_test:
-        Requests per second:    1564.35 [#/sec] (mean)
-        Complete requests:      5000
+    	Requests per second:    1547.23 [#/sec] (mean)
+    	Complete requests:      5000
     pyramid_test:
-        Requests per second:    2788.13 [#/sec] (mean)
-        Complete requests:      5000
+    	Requests per second:    2785.36 [#/sec] (mean)
+    	Complete requests:      5000
     hug_test:
-        Requests per second:    1218.59 [#/sec] (mean)
-        Complete requests:      5000
+    	Requests per second:    1213.19 [#/sec] (mean)
+    	Complete requests:      5000
     flask_test:
-        Requests per second:    1980.06 [#/sec] (mean)
-        Complete requests:      5000
+    	Requests per second:    2372.21 [#/sec] (mean)
+    	Complete requests:      5000
     bottle_test:
-        Requests per second:    3161.83 [#/sec] (mean)
-        Complete requests:      5000
+    	Requests per second:    3084.96 [#/sec] (mean)
+    	Complete requests:      5000
+
 
 Manually running tests for the others:
 
