@@ -46,7 +46,10 @@ Output from `runner.sh` (for tests working with WSGI):
 
 
     Test results:
-    
+
+    bobo_test:
+        Requests per second:    2879.91 [#/sec] (mean)
+        Complete requests:      5000
     falcon_test:
     	Requests per second:    3354.99 [#/sec] (mean)
     	Complete requests:      5000
