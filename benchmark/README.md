@@ -4,7 +4,8 @@
 more of the tests in Gunicorn. Given that, I've decided to use 
 two workers instead of just one for these tests. 
 
-
+**UPDATE 2** - These benchmarks helped the author of Hug find a bug. 
+As of version 1.8.2 it's *way* faster. 
 
 The benchmarks perform the following framework-specific tasks.
 
@@ -69,14 +70,14 @@ Output from `runner.sh` (for tests working with WSGI):
     pyramid_test:
     	Requests per second:    2785.36 [#/sec] (mean)
     	Complete requests:      5000
-    hug_test:
-    	Requests per second:    1213.19 [#/sec] (mean)
-    	Complete requests:      5000
     flask_test:
     	Requests per second:    2372.21 [#/sec] (mean)
     	Complete requests:      5000
     bottle_test:
     	Requests per second:    3084.96 [#/sec] (mean)
+    	Complete requests:      5000
+    hug_test (1.8.2):
+    	Requests per second:    3146.27 [#/sec] (mean)
     	Complete requests:      5000
 
 
