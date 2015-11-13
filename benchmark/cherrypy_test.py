@@ -8,3 +8,4 @@ class Root(object):
         return json.dumps({"message":"Hello, world!"})
 
 app = cherrypy.tree.mount(Root())
+cherrypy.log.screen = False
