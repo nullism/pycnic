@@ -1,10 +1,13 @@
 import cherrypy
-import json
 
-class JSONRoot(object):
-    
+
+class Root(object):
+
     @cherrypy.expose
-    def index(self):
-        return json.dumps({"message":"Hello, world!"})
+    @cherrypy.tools.json_out()
+    def json(self):
+        return {"message": "Hello, world!"}
 
-app = cherrypy.tree.mount(JSONRoot(), "/json")
+
+app = cherrypy.tree.mount(Root())
+cherrypy.log.screen = False
