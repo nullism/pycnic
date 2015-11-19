@@ -65,8 +65,8 @@ Output from `runner.sh` (for tests working with WSGI):
     	Requests per second:    3183.22 [#/sec] (mean)
     	Complete requests:      5000
     cherrypy_test:
-    	Requests per second:    1547.23 [#/sec] (mean)
-    	Complete requests:      5000
+        Requests per second:    1696.93 [#/sec] (mean)
+        Complete requests:      5000
     pyramid_test:
     	Requests per second:    2785.36 [#/sec] (mean)
     	Complete requests:      5000
