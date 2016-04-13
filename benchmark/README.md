@@ -21,7 +21,7 @@ The benchmarks perform the following framework-specific tasks.
 
 You'll need to install all specified frameworks. Python 3 was used.
 
-    pip3 install bobo bottle cherrypy hug falcon pycnic pyramid gunicorn
+    pip3 install bobo bottle cherrypy hug falcon flask pycnic pyramid gunicorn
 
 Then:
 
