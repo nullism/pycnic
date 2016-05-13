@@ -4,6 +4,7 @@ import traceback
 import json
 import logging
 
+from . import utils
 from .data import STATUSES
 from . import errors
 
@@ -16,9 +17,10 @@ class Handler(object):
 
 class Request(object):
 
-
     def __init__(self, path, method, environ):
         # Defaults
+        self._args = {}
+        self._json_args = {}
         self._cookies = {}
         self._body = None
         self._data = {} 
@@ -26,7 +28,28 @@ class Request(object):
         self.path = path
         self.method = method.upper()
         self.environ = environ
-        
+    
+    @property
+    def args(self):
+        if self._args:
+            return self._args
+        qs = self.environ["QUERY_STRING"]
+        self._args = utils.query_string_to_dict(qs)
+        return self._args
+
+    @property
+    def json_args(self):
+        if self._json_args:
+            return self._json_args
+
+        try:
+            qs = self.environ["QUERY_STRING"]
+            self._json_args = utils.query_string_to_json(qs) 
+        except Exception:
+            raise errors.HTTP_400("Invalid JSON in request query string") 
+
+        return self._json_args
+ 
     @property
     def body(self):
         if self._body:

@@ -19,6 +19,8 @@ class IndexHandler(Handler):
             "clientIp":self.request.ip,
             "cookies":self.request.cookies,
             "method":self.request.method,
+            "args":self.request.args,
+            "json_args":self.request.json_args,
         }
 
     def post(self):
