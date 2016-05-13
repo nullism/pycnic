@@ -3,6 +3,7 @@ import re
 import traceback
 import json
 import logging
+import urllib.parse
 
 from .data import STATUSES
 from . import errors
@@ -11,7 +12,7 @@ from . import errors
 class Handler(object):
 
     request = None
-    response = None 
+    response = None
 
 
 class Request(object):
@@ -21,12 +22,13 @@ class Request(object):
         # Defaults
         self._cookies = {}
         self._body = None
-        self._data = {} 
+        self._data = {}
+        self._args = {}
 
         self.path = path
         self.method = method.upper()
         self.environ = environ
-        
+
     @property
     def body(self):
         if self._body:
@@ -68,6 +70,15 @@ class Request(object):
         return {}
 
     @property
+    def args(self):
+        if self._args:
+            return self._args
+        else:
+            query = self.environ['QUERY_STRING']
+            self._args = dict(urllib.parse.parse_qsl(query))
+            return self._args
+
+    @property
     def ip(self):
         try:
             return self.environ['HTTP_X_FORWARDED_FOR'].split(',')[-1].strip()
@@ -75,8 +86,8 @@ class Request(object):
             return self.environ['REMOTE_ADDR']
 
 class Response(object):
-    
-    header_dict = { 
+
+    header_dict = {
         "Content-Type": "application/json"
     }
 
@@ -95,7 +106,7 @@ class Response(object):
         if domain:
             domain = "Domain=%s; "%(domain)
         self.cookie_dict[key] = "%s;%s%s path=%s"%(value, domain, expires, path)
-        
+
     def delete_cookie(self, key):
         self.set_cookie(key, "DELETED", expires="Thu, 01 Jan 1970 00:00:00 GMT")
 
@@ -123,7 +134,7 @@ class WSGI:
     before = None
     after = None
     strip_path = True
-        
+
     def __init__(self, environ, start_response):
 
         if not self.logger:
@@ -148,8 +159,8 @@ class WSGI:
         self.environ = environ
         self.start = start_response
         self.response.set_header("Content-Type", "application/json")
-       
-            
+
+
     def __iter__(self):
         try:
             if self.before:
@@ -164,7 +175,7 @@ class WSGI:
             headers = [("Content-Type", "application/json")]
             self.start(self.response.status, headers)
             resp = err.response()
-    
+
         except Exception as err:
             self.logger.exception(err)
             headers = [("Content-Type", "application/json")]
@@ -173,7 +184,7 @@ class WSGI:
                 resp = { "error": traceback.format_exc()}
             else:
                 resp = { "error": "Internal server error encountered." }
-            
+
         if isinstance(resp, dict):
             return iter([json.dumps(resp).encode('utf-8')])
         elif isinstance(resp, str):
@@ -184,12 +195,12 @@ class WSGI:
     def delegate(self):
         path = self.request.path
         method = self.request.method
-                
+
         for pattern, handler in self.routes:
             # Set defaults for handler
             handler.request = self.request
             handler.response = self.response
-            
+
             if hasattr(handler, 'before'):
                 handler.before()
 
@@ -208,7 +219,7 @@ class WSGI:
                     handler.after()
 
                 return output
-                               
+
         raise errors.HTTP_404("Path %s not found"%(path))
 
 
