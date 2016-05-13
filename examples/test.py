@@ -6,27 +6,28 @@ from pycnic.errors import HTTPError
 
 def before(handler):
     if handler.request.ip in ['1.2.3.4', '5.6.7.8']:
-        raise HTTPError(401, "Hey! You're banned from here.")        
+        raise HTTPError(401, "Hey! You're banned from here.")
 
 class IndexHandler(Handler):
 
     def get(self, name="Nobody"):
-        return { 
-            "message":"How you is, %s?"%(name), 
+        return {
+            "message":"How you is, %s?"%(name),
             "path":self.request.path,
             "requestBody":self.request.body,
             "status":self.response.status,
             "clientIp":self.request.ip,
             "cookies":self.request.cookies,
             "method":self.request.method,
+            "args":self.request.args,
         }
 
     def post(self):
         data = self.request.data
         self.response.status_code = 201
-        return { 
+        return {
             "message":"thanks for the datas"
-        }    
+        }
 
 class application(WSGI):
     routes = [
