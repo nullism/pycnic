@@ -184,7 +184,7 @@ class WSGI:
 
         except errors.HTTPError as err:
             self.response.status_code = err.status_code
-            headers = [("Content-Type", "application/json")]
+            headers = [("Content-Type", "application/json")] + err.headers
             self.start(self.response.status, headers)
             resp = err.response()
     

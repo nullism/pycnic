@@ -8,14 +8,18 @@ class HTTPError(PycnicError):
     status = None
     message = None
     data = None
+    headers = None
 
-    def __init__(self, status_code, message, data=None):
+    def __init__(self, status_code, message, data=None, headers=[]):
         if self.status_code:
             status_code = self.status_code
         self.status_code = status_code
         self.status = STATUSES[status_code]
         self.message = message
         self.data = data
+        if self.headers:
+            headers = self.headers
+        self.headers = headers
 
     def response(self):
         return { 
