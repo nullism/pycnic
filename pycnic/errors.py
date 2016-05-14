@@ -8,14 +8,16 @@ class HTTPError(PycnicError):
     status = None
     message = None
     data = None
+    headers = None
 
-    def __init__(self, status_code, message, data=None):
+    def __init__(self, status_code, message, data=None, headers=[]):
         if self.status_code:
             status_code = self.status_code
         self.status_code = status_code
         self.status = STATUSES[status_code]
         self.message = message
         self.data = data
+        self.headers = headers
 
     def response(self):
         return { 
@@ -27,11 +29,12 @@ class HTTPError(PycnicError):
 
 class HTTPNumeric(HTTPError):
     status_code = 0
-    def __init__(self, message, data=None):
-        super(HTTPError, self).__init__(self.status_code, message, data)
+    def __init__(self, message, data=None, headers=[]):
+        super(HTTPError, self).__init__(self.status_code, message, data, headers)
         self.status = STATUSES[self.status_code]
         self.message = message
         self.data = data
+        self.headers = headers
 
 class HTTP_400(HTTPNumeric):
     status_code = 400
