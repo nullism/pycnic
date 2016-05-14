@@ -28,6 +28,10 @@ class Request(object):
         self.path = path
         self.method = method.upper()
         self.environ = environ
+
+    def get_header(self, name, default=None):
+        wsgi_name = 'HTTP_' + name.upper().replace('-', '_')
+        return self.environ.get(wsgi_name, default)
     
     @property
     def args(self):
