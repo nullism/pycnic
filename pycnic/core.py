@@ -18,6 +18,7 @@ class Handler(object):
 class Request(object):
 
     def __init__(self, path, method, environ):
+        self._headers = None
         self._args = None
         self._json_args = None
         self._cookies = None
@@ -28,6 +29,23 @@ class Request(object):
         self.method = method.upper()
         self.environ = environ
     
+    def get_header(self, name, default=None):
+        return self.headers.get(name.title(), default)
+
+    @property
+    def headers(self):
+        if self._headers is not None:
+            return self._headers
+        self._headers = {}
+        for key, value in self.environ.items():
+            if key == "CONTENT_TYPE" or key == "CONTENT_LENGTH":
+                header = key.title().replace("_", "-")
+                self._headers[header] = value
+            elif key.startswith("HTTP_"):
+                header = key[5:].title().replace("_", "-")
+                self._headers[header] = value
+        return self._headers
+
     @property
     def args(self):
         if self._args is not None:
