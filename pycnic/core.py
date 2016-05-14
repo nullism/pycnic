@@ -195,7 +195,7 @@ class WSGI:
             headers = [("Content-Type", "application/json")]
             self.start(STATUSES[500], headers)
             if self.debug:
-                resp = { "error": traceback.format_exc()}
+                resp = { "error": traceback.format_exc().split("\n")}
             else:
                 resp = { "error": "Internal server error encountered." }
             
