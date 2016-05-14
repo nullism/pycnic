@@ -17,7 +17,8 @@ class HTTPError(PycnicError):
         self.status = STATUSES[status_code]
         self.message = message
         self.data = data
-        self.headers = headers
+        if headers:
+            self.headers = headers
 
     def response(self):
         return { 
