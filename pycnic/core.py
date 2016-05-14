@@ -99,11 +99,11 @@ class Request(object):
 
 class Response(object):
     
-    header_dict = { 
-        "Content-Type": "application/json"
-    }
 
     def __init__(self, status_code):
+        self.header_dict = { 
+            "Content-Type": "application/json"
+        }
         self._headers = []
         self.cookie_dict = {}
         self.status_code = status_code
