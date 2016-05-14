@@ -18,12 +18,11 @@ class Handler(object):
 class Request(object):
 
     def __init__(self, path, method, environ):
-        # Defaults
-        self._args = {}
-        self._json_args = {}
-        self._cookies = {}
+        self._args = None
+        self._json_args = None
+        self._cookies = None
         self._body = None
-        self._data = {} 
+        self._data = None
 
         self.path = path
         self.method = method.upper()
@@ -31,7 +30,7 @@ class Request(object):
     
     @property
     def args(self):
-        if self._args:
+        if self._args is not None:
             return self._args
         qs = self.environ["QUERY_STRING"]
         self._args = utils.query_string_to_dict(qs)
@@ -39,7 +38,7 @@ class Request(object):
 
     @property
     def json_args(self):
-        if self._json_args:
+        if self._json_args is not None:
             return self._json_args
 
         try:
@@ -52,7 +51,7 @@ class Request(object):
  
     @property
     def body(self):
-        if self._body:
+        if self._body is not None:
             return self._body
         try:
             length = int(self.environ.get("CONTENT_LENGTH", "0"))
@@ -60,13 +59,17 @@ class Request(object):
             length = 0
         if length > 0:
             self._body = self.environ['wsgi.input'].read(length)
+        else:
+            self._body = ''
 
         return self._body
 
     @property
     def cookies(self):
-        if self._cookies:
+        if self._cookies is not None:
             return self._cookies
+
+        self._cookies = {}
 
         if 'HTTP_COOKIE' in self.environ:
             for cookie_line in self.environ['HTTP_COOKIE'].split(';'):
@@ -74,21 +77,22 @@ class Request(object):
                     continue
                 cname, cvalue = cookie_line.strip().split('=',1)
                 self._cookies[cname] = cvalue
-            return self._cookies
 
-        return {}
+        return self._cookies
 
     @property
     def data(self):
-        if self._data:
+        if self._data is not None:
             return self._data
         if self.body:
             try:
                 self._data = json.loads(self.body.decode('utf-8'))
-                return self._data
             except Exception:
                 raise errors.HTTP_400("Expected JSON in request body")
-        return {}
+        else:
+            self._data = {}
+
+        return self._data
 
     @property
     def ip(self):
