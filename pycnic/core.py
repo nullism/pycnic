@@ -222,7 +222,11 @@ class WSGI:
                 resp = { "error": "Internal server error encountered." }
             
         if isinstance(resp, dict):
-            return iter([json.dumps(resp).encode('utf-8')])
+            if self.debug:
+                jresp = json.dumps(resp, indent=4)
+            else:
+                jresp = json.dumps(resp)
+            return iter([jresp.encode('utf-8')])
         elif isinstance(resp, str):
             return iter([resp.encode('utf-8')])
         else:
