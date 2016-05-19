@@ -240,12 +240,12 @@ class WSGI:
             # Set defaults for handler
             handler.request = self.request
             handler.response = self.response
-            
-            if hasattr(handler, 'before'):
-                handler.before()
 
             m = re.match('^' + pattern + '$', path)
             if m:
+                if hasattr(handler, 'before'):
+                    handler.before()
+
                 args = m.groups()
                 funcname = method.lower()
                 try:
