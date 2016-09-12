@@ -2,10 +2,15 @@
 
 output="Test results:\n"
 
-for app in bobo_test falcon_test pycnic_test cherrypy_test pyramid_test hug_test flask_test bottle_test;
+for app in bobo_test falcon_test pycnic_test cherrypy_test pyramid_test hug_test flask_test bottle_test tornado_test;
 do
     echo "TEST: $app"
-    gunicorn -w 3 $app:app &
+    if [ "$app" = "tornado_test" ]; then
+	worker="tornado"
+    else
+	worker="sync"
+    fi
+    gunicorn -w 3 -k $worker $app:app &
     gunicorn_pid=$!
     sleep 2
     ab_out=`ab -n 5000 -c 5 http://127.0.0.1:8000/json`
