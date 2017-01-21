@@ -221,7 +221,7 @@ class WSGI:
             else:
                 resp = { "error": "Internal server error encountered." }
             
-        if isinstance(resp, dict):
+        if isinstance(resp, (dict, list)):
             if self.debug:
                 jresp = json.dumps(resp, indent=4)
             else:
