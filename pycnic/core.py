@@ -167,6 +167,7 @@ class WSGI:
     logger = None
     before = None
     after = None
+    headers = None
     strip_path = True
         
     def __init__(self, environ, start_response):
@@ -202,11 +203,16 @@ class WSGI:
             resp = self.delegate()
             if self.after:
                 self.after()
-            self.start(self.response.status, self.response.headers)
+            headers = self.response.headers
+            if self.headers:
+                headers += self.headers
+            self.start(self.response.status, headers)
 
         except errors.HTTPError as err:
             self.response.status_code = err.status_code
             headers = [("Content-Type", "application/json")]
+            if self.headers:
+                headers += self.headers
             if err.headers:
                 headers += err.headers
             self.start(self.response.status, headers)
