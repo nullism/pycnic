@@ -27,8 +27,9 @@ def query_string_to_json(qs):
 
 
 def requires_validation(validator, with_route_params=False):
-    """ Validates an incoming request over given validator. If with_route_params is set to True,
-    validator is called with request data and args taken from route, otherwise only request data is
+    """ Validates an incoming request over given validator. 
+    If with_route_params is set to True, validator is called with request
+    data and args taken from route, otherwise only request data is
     passed to validator. If validator raises any Exception, HTTP_400 is raised.
     """
     def wrapper(f):
