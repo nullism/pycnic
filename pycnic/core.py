@@ -166,6 +166,7 @@ class WSGI:
     debug = False
     logger = None
     before = None
+    teardown = None
     after = None
     headers = None
     strip_path = True
@@ -175,7 +176,7 @@ class WSGI:
         if not self.logger:
             self.logger = logging.Logger(__name__)
 
-        self.logger.info("__init__ called")
+        self.logger.debug("WSGI __init__ called")
 
         path = environ["PATH_INFO"]
         if self.strip_path and len(path) > 1 and path.endswith("/"):
@@ -226,16 +227,22 @@ class WSGI:
                 resp = { "error": traceback.format_exc().split("\n")}
             else:
                 resp = { "error": "Internal server error encountered." }
+
+        if self.teardown:
+            self.teardown()
             
         if isinstance(resp, (dict, list)):
             if self.debug:
                 jresp = json.dumps(resp, indent=4)
             else:
                 jresp = json.dumps(resp)
+            self.logger.debug("Sending JSON response: %s", jresp)
             return iter([jresp.encode('utf-8')])
         elif isinstance(resp, str):
+            self.logger.debug("Sending string response: %s", resp)
             return iter([resp.encode('utf-8')])
         else:
+            self.logger.debug("Sending unknown response: %s", resp)
             return iter(resp)
 
     def delegate(self):
