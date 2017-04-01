@@ -37,7 +37,7 @@ def requires_validation(validator, with_route_params=False):
         def wrapped(*args, **kwargs):
             try:
                 if with_route_params:
-                    validator(args[0].request.data, args[1:])
+                    validator(args[0].request.data, *args[1:])
                 else:
                     validator(args[0].request.data)
             except Exception as e:
