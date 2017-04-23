@@ -142,7 +142,7 @@ class Response(object):
             domain = "Domain=%s; "%(domain)
 
         self.cookie_dict[key] = "%s;%s%s path=%s; %s"\
-            %(value, domain, expires, path, ";".join(flags))
+            %(value, domain, expires, path, "; ".join(flags))
         
     def delete_cookie(self, key):
         self.set_cookie(key, "DELETED", expires="Thu, 01 Jan 1970 00:00:00 GMT")
