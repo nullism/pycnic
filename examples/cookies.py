@@ -38,10 +38,20 @@ class Logout(Handler):
             "cookies":self.request.cookies 
         }
 
+class TestSetCookie(Handler):
+    
+    def get(self):
+        self.response.set_cookie(
+            "TestCookie", "12345", path="/test", flags=["HttpOnly", "ExtraFlag"])
+        return {
+            "message": "This is a set_cookie test. Check developer tools to see the Set-Cookie string",
+        }
+
 class app(WSGI):
     routes = [
         ("/login", Login()),
         ("/logout", Logout()),
+        ("/test", TestSetCookie())
     ]
 
 if __name__ == "__main__":
