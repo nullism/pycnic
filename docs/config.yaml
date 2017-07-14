@@ -1,0 +1,36 @@
+base_path: /home/nullism/github/pycnic/docs
+blurb_max: 50
+date_format: '%Y-%m-%d'
+home_page: index
+markdown_exts:
+- codehilite
+- toc
+- pykwiki.ext.tpl
+- pykwiki.ext.post
+postlist:
+  max_pages: 5
+  order_field: mtime
+  order_type: descending
+  per_page: 2
+  post_type: preview
+rss_max_entries: 20
+site:
+  author: Nullism
+  base_url: http://pycnic.nullism.com
+  description: Pycnic, a tinsy web framework for JSON APIs.
+  keywords: pycnic, python web frameworks, microframework, API
+  title: Pycnic Docs
+source_ext: .md
+style: dark
+theme: null
+time_format: '%H:%M:%S'
+timestamp_format: '%Y-%m-%d %H:%M'
+upload_exts:
+- .gif
+- .jpg
+- .jpeg
+- .png
+- .tiff
+- .pdf
+version: 2
+web_prefix: /docs
