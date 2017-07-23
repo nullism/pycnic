@@ -173,6 +173,7 @@ class WSGI:
     after = None
     headers = None
     strip_path = True
+    json_cls = None
         
     def __init__(self, environ, start_response):
 
@@ -235,10 +236,18 @@ class WSGI:
             self.teardown()
             
         if isinstance(resp, (dict, list)):
-            if self.debug:
-                jresp = json.dumps(resp, indent=4)
-            else:
-                jresp = json.dumps(resp)
+            try:
+                if self.debug:
+                    jresp = json.dumps(resp, indent=4, cls=self.json_cls)
+                else:
+                    jresp = json.dumps(resp, cls=self.json_cls)
+            except Exception as err:
+                if self.debug:
+                    msg = traceback.format_exc().split("\n")
+                    jresp = json.dumps({ "error": msg }, indent=4)
+                else:
+                    msg = "An unhandled exception occured during response"
+                    jresp = json.dumps({ "error": msg })
             self.logger.debug("Sending JSON response: %s", jresp)
             return iter([jresp.encode('utf-8')])
         elif isinstance(resp, str):

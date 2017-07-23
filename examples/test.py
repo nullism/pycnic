@@ -23,12 +23,10 @@ class IndexHandler(Handler):
             "json_args":self.request.json_args,
         }
 
-    def post(self):
+    def post(self, name="Nobody"):
         data = self.request.data
         self.response.status_code = 201
-        return { 
-            "message":"thanks for the datas"
-        }    
+        return self.get(name)
 
 class application(WSGI):
     routes = [
