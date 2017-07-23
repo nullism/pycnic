@@ -48,5 +48,8 @@ The WSGI class contains several configuration properties for use in your `app` s
 
         # routes: A list of (path, Handler()) tuples.
         routes = []
+        
+        # json_cls: An optional custom json response encoder, new in v0.1.3
+        json_cls = None
 
 
