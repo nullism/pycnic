@@ -3,11 +3,17 @@ import re
 import traceback
 import json
 import logging
+import bson
 
 from . import utils
 from .data import STATUSES
 from . import errors
 
+class ObjectJSONEncoder(json.JSONEncoder):
+    def default(self, o):
+        if isinstance(o, bson.objectid.ObjectId):
+            return str(o)
+        return json.JSONEncoder.default(self, o)
 
 class Handler(object):
 
@@ -236,9 +242,9 @@ class WSGI:
             
         if isinstance(resp, (dict, list)):
             if self.debug:
-                jresp = json.dumps(resp, indent=4)
+                jresp = json.dumps(resp, indent=4, cls=ObjectJSONEncoder)
             else:
-                jresp = json.dumps(resp)
+                jresp = json.dumps(resp, cls=ObjectJSONEncoder)
             self.logger.debug("Sending JSON response: %s", jresp)
             return iter([jresp.encode('utf-8')])
         elif isinstance(resp, str):
