@@ -18,6 +18,8 @@
                 post: example-cookies
             - Validation:
                 post: example-validation
+            - CORS:
+                post: example-cors
     - Classes:
         children:
             - WSGI:
