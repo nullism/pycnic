@@ -53,6 +53,7 @@ STATUSES = {
         507: "507 Insufficient Storage",
         508: "508 Loop Detected",
         510: "510 Not Extended",
+        577: "577 Unknown Status",
 }
 
 
