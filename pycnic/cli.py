@@ -38,7 +38,7 @@ def print_description(cls, max_route_length, max_method_length):
     print('Description:'.rjust(max_route_length+2+max_method_length) + '  ' + doc_lines[0].strip())
     for line in doc_lines[1:]:
         print(''.rjust(max_route_length+4+max_method_length) + line.strip())
-    print()
+    print('')
 
 
 def alpha_sort(routes, verbose=False):
@@ -59,7 +59,7 @@ def alpha_sort(routes, verbose=False):
     ljust_method_word = 'Method'.ljust(max_method_length)
     ljust_route_word = 'Route'.ljust(max_route_length)
     print(ljust_route_word + '  ' + ljust_method_word + '  Class')
-    print()
+    print('')
     
     # Print justified strings
     for route in routes:
@@ -84,7 +84,7 @@ def class_sort(routes, verbose=False):
     ljust_method_word = 'Method'.ljust(max_method_length)
     ljust_route_word = 'Route'.ljust(max_route_length)
     print(ljust_route_word + '  ' + ljust_method_word + '  Class')
-    print()
+    print('')
 
     # Print justified strings
     for route in routes:
@@ -108,7 +108,7 @@ def no_sort(routes, verbose=False):
     ljust_method_word = 'Method'.ljust(max_method_length)
     ljust_route_word = 'Route'.ljust(max_route_length)
     print(ljust_route_word + '  ' + ljust_method_word + '  Class')
-    print()
+    print('')
     
     # Print justified strings
     for route in routes:
@@ -154,7 +154,7 @@ def method_sort(routes, verbose=False):
     print(ljust_method_word + '  ' + ljust_route_word + '  Class')
     for key in method_routes:
         if len(method_routes[key]) > 0:
-            print()
+            print('')
             for a in method_routes[key]:
                 ljust_route = a[0].ljust(max_route_length)
                 ljust_method = key.upper().ljust(max_method_length)
@@ -189,7 +189,7 @@ def find_routes():
     parser.add_argument('path', type=str, nargs='?', default='main:app', help='Path to the specified application. If none given, looks in main.py for a class called app. Example: pycnic.pycnic:app')
 
     # We've already handled the command argument, so we only process the args after that.
-    args = parser.parse_args([*sys.argv[2:]])
+    args = parser.parse_args(sys.argv[2:])
 
     # Extract class name from path
     module_path, class_name = args.path.split(':')
@@ -208,30 +208,38 @@ def find_routes():
     # Add the current working directory to the path so that imports will
     # function properly in the imported file.
     sys.path.append(os.getcwd())
-    with nostdout():
-        # Dynamically load the file in order to assess the class
-        if sys.version_info[0] < 3:
-            # For python 2.X, we use the imp library
-            # Reference: https://stackoverflow.com/a/67692
-            import imp
 
-            loaded_src = imp.load_source(module_name, file_path)
-            wsgi_class = getattr(loaded_src, class_name)
-        else:
-            # For python 3.X, we use importlib
-            # Reference: https://stackoverflow.com/a/67692
-            if sys.version_info[1] >= 5:
-                # For 3.5+, importlib.util is the way to go for dynamic module loading
-                import importlib.util
-                spec = importlib.util.spec_from_file_location(module_name, file_path)
-                loaded_src = importlib.util.module_from_spec(spec)
-                spec.loader.exec_module(loaded_src)
+    # If there's an exception while importing, nostdout will catch the error
+    #  output, and the script will look like it ran. Wrapping this in a try-
+    #  except block allows us to raise the exception after restoring stdout
+    #  and stderr.
+    try:
+        with nostdout():
+            # Dynamically load the file in order to assess the class
+            if sys.version_info[0] < 3:
+                # For python 2.X, we use the imp library
+                # Reference: https://stackoverflow.com/a/67692
+                import imp
+
+                loaded_src = imp.load_source(module_name, file_path)
                 wsgi_class = getattr(loaded_src, class_name)
-            elif sys.version_info[1] in [3, 4]:
-                # For 3.3 and 3.4, SourceFileLoader is the tool to use
-                from importlib.machinery import SourceFileLoader
-                loaded_src = SourceFileLoader(module_name, file_path)
-                wsgi_class = getattr(loaded_src, class_name)
+            else:
+                # For python 3.X, we use importlib
+                # Reference: https://stackoverflow.com/a/67692
+                if sys.version_info[1] >= 5:
+                    # For 3.5+, importlib.util is the way to go for dynamic module loading
+                    import importlib.util
+                    spec = importlib.util.spec_from_file_location(module_name, file_path)
+                    loaded_src = importlib.util.module_from_spec(spec)
+                    spec.loader.exec_module(loaded_src)
+                    wsgi_class = getattr(loaded_src, class_name)
+                elif sys.version_info[1] in [3, 4]:
+                    # For 3.3 and 3.4, SourceFileLoader is the tool to use
+                    from importlib.machinery import SourceFileLoader
+                    loaded_src = SourceFileLoader(module_name, file_path)
+                    wsgi_class = getattr(loaded_src, class_name)
+    except Exception as e:
+        raise e
 
     # Restore the system PATH to its original state after loading what was necessary.
     sys.path = starting_sys_path
@@ -286,12 +294,12 @@ def usage():
     allowed_commands_list_str = '{' + ', '.join(allowed_commands) + '}'
     script_name = os.path.basename(sys.argv[0])
     print('usage: ' + script_name + ' [-h] ' + allowed_commands_list_str)
-    print()
+    print('')
     print('Pycnic CLI')
-    print()
+    print('')
     print('positional arguments:')
     print('  ' + allowed_commands_list_str + '      Subcommand to run.')
-    print()
+    print('')
     print('optional arguments:')
     print('  -h, --help  show this help message and exit')
 
