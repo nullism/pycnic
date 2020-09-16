@@ -8,9 +8,9 @@ tags: [cli, examples]
 ## Purpose
 
 The `pycnic routes` CLI tool can be used for route introspection for pycnic
-applications. It lists all the routes that it can identify from the WSGI.routes
-list, as well as the methods that they support, and the fully qualified handler
-object names.
+applications. It lists all the routes that it can identify from the 
+`pycnic.core.WSGI.routes` list, as well as the methods that they support, and
+the fully qualified handler object names.
 
 ## Usage
 
