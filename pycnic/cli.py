@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-import argparse, contextlib, inspect, sys, os
+import argparse, contextlib, inspect, os, sys
 
 # Local imports
 from pycnic.core import WSGI, Handler
@@ -183,12 +183,13 @@ def find_routes():
     starting_sys_path = [el for el in sys.path]
 
     # Parse command-line arguments
-    parser = argparse.ArgumentParser(description='Pycnic Routes')
-    parser.add_argument('routes')
-    parser.add_argument('path', nargs='?', default='main:app', help='Path to the specified application. If none given, looks in main.py for a class called app. Example: pycnic.pycnic:app')
+    parser = argparse.ArgumentParser(prog='pycnic routes', description='Pycnic Routes')
     parser.add_argument('-sort', required=False, help='Sorting method to use, if any.', choices=('alpha', 'class', 'method'))
     parser.add_argument('--verbose', '-v', action='store_true', help='Verbose route output. Prints route class docstring.')
-    args = parser.parse_args([*sys.argv[1:]])
+    parser.add_argument('path', type=str, nargs='?', default='main:app', help='Path to the specified application. If none given, looks in main.py for a class called app. Example: pycnic.pycnic:app')
+
+    # We've already handled the command argument, so we only process the args after that.
+    args = parser.parse_args([*sys.argv[2:]])
 
     # Extract class name from path
     module_path, class_name = args.path.split(':')
