@@ -32,6 +32,10 @@
         children:
             - WSGI Servers:
                 post: wsgi-servers
+    - CLI:
+        children:
+            - Routes:
+                post: cli-routes
 - Download:
     post: download
 - Support:
