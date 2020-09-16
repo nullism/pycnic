@@ -21,6 +21,7 @@ setup(name='pycnic',
     package_dir={'pycnic':'pycnic'},
     url = 'http://pycnic.nullism.com',
     license = 'MIT',
+    entry_points={"console_scripts": ["pycnic = pycnic.cli:main"]},
     install_requires = [],
     provides = ['pycnic']
 )
