@@ -349,6 +349,8 @@ def main():
         usage()
     elif run_type.lower() == 'routes':
         find_routes()
+    else:
+        usage()
 
 
 if __name__ == "__main__":
