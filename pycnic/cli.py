@@ -263,6 +263,9 @@ def find_routes():
                 from importlib.machinery import SourceFileLoader
                 loaded_src = SourceFileLoader(module_name, file_path)
                 wsgi_class = getattr(loaded_src, class_name)
+            else:
+                raise ImportError('Pycnic routes is not supported for Python \
+                                  versions 3.0.X through 3.2.X')
 
     # Restore the system PATH to its original state
     #  now that we've loaded the input project.
