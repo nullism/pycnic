@@ -12,7 +12,30 @@ from . import errors
 class Handler(object):
 
     request = None
-    response = None 
+    response = None
+
+    def options(self):
+        """Default implementation of OPTIONS method.
+
+        Checks which methods are implemented, and sets the Allow header
+        accordingly.
+        """
+        # Reference: https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods
+        http_methods = [
+            'get',
+            'head',
+            'post',
+            'put',
+            'delete',
+            'connect',
+            'options',
+            'trace',
+            'patch'
+        ]
+
+        supported_methods = [method.upper() for method in http_methods if method in dir(self)]
+        self.response.set_header('Allow', ', '.join(supported_methods))
+        return {}
 
 
 class Request(object):
