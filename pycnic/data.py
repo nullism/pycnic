@@ -55,5 +55,3 @@ STATUSES = {
         510: "510 Not Extended",
         577: "577 Unknown Status",
 }
-
-
