@@ -12,7 +12,35 @@ from . import errors
 class Handler(object):
 
     request = None
-    response = None 
+    response = None
+
+    def options(self):
+        """Default implementation of OPTIONS method.
+
+        Checks which methods are implemented, and sets the Allow header
+        accordingly.
+        """
+        # Reference: https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods
+        http_methods = [
+            'get',
+            'head',
+            'post',
+            'put',
+            'delete',
+            'connect',
+            'options',
+            'trace',
+            'patch'
+        ]
+
+        supported_methods = []
+
+        for method in http_methods:
+            if method in dir(self):
+                supported_methods.append(method.upper())
+
+        self.response.set_header('Allow', ', '.join(supported_methods))
+        return {}
 
 
 class Request(object):
@@ -28,7 +56,7 @@ class Request(object):
         self.path = path
         self.method = method.upper()
         self.environ = environ
-    
+
     def get_header(self, name, default=None):
         return self.headers.get(name.title(), default)
 
@@ -61,12 +89,12 @@ class Request(object):
 
         try:
             qs = self.environ["QUERY_STRING"]
-            self._json_args = utils.query_string_to_json(qs) 
+            self._json_args = utils.query_string_to_json(qs)
         except Exception:
-            raise errors.HTTP_400("Invalid JSON in request query string") 
+            raise errors.HTTP_400("Invalid JSON in request query string")
 
         return self._json_args
- 
+
     @property
     def body(self):
         if self._body is not None:
@@ -93,7 +121,7 @@ class Request(object):
             for cookie_line in self.environ['HTTP_COOKIE'].split(';'):
                 if "DELETED" in cookie_line:
                     continue
-                cname, cvalue = cookie_line.strip().split('=',1)
+                cname, cvalue = cookie_line.strip().split('=', 1)
                 self._cookies[cname] = cvalue
 
         return self._cookies
@@ -119,11 +147,11 @@ class Request(object):
         except KeyError:
             return self.environ['REMOTE_ADDR']
 
+
 class Response(object):
-    
 
     def __init__(self, status_code):
-        self.header_dict = { 
+        self.header_dict = {
             "Content-Type": "application/json"
         }
         self._headers = []
@@ -135,33 +163,35 @@ class Response(object):
 
     def set_cookie(
             self, key, value, expires="", path='/', domain="", flags=[]):
-        value = value.replace(";","") # ; not allowed
+        value = value.replace(";", "")  # ; not allowed
         if expires:
-            expires = "expires=%s; "%(expires)
+            expires = "expires=%s; " % (expires)
         if domain:
-            domain = "Domain=%s; "%(domain)
+            domain = "Domain=%s; " % (domain)
 
         self.cookie_dict[key] = "%s;%s%s path=%s; %s"\
-            %(value, domain, expires, path, "; ".join(flags))
-        
+            % (value, domain, expires, path, "; ".join(flags))
+
     def delete_cookie(self, key):
-        self.set_cookie(key, "DELETED", expires="Thu, 01 Jan 1970 00:00:00 GMT")
+        expiry_string = 'Thu, 01 Jan 1970 00:00:00 GMT'
+        self.set_cookie(key, "DELETED", expires=expiry_string)
 
     @property
     def headers(self):
         self._headers = []
-        for k,v in self.header_dict.items():
+        for k, v in self.header_dict.items():
             self._headers.append((k, v))
-        for k,v in self.cookie_dict.items():
-            self._headers.append(('Set-Cookie', '%s=%s'%(k,v)))
+        for k, v in self.cookie_dict.items():
+            self._headers.append(('Set-Cookie', '%s=%s' % (k, v)))
         return self._headers
 
     @property
     def status(self):
         if self.status_code in STATUSES:
             return STATUSES[self.status_code]
-        print("Warning! Status %s does not exist!"%(self.status_code))
+        print("Warning! Status %s does not exist!" % (self.status_code))
         return STATUSES[577]
+
 
 class WSGI:
 
@@ -174,7 +204,7 @@ class WSGI:
     headers = None
     strip_path = True
     json_cls = None
-        
+
     def __init__(self, environ, start_response):
 
         if not self.logger:
@@ -192,15 +222,12 @@ class WSGI:
             environ=environ
         )
 
-        self.response = Response(
-            status_code = 200
-        )
+        self.response = Response(status_code=200)
 
         self.environ = environ
         self.start = start_response
         self.response.set_header("Content-Type", "application/json")
-       
-            
+
     def __iter__(self):
         try:
             if self.before:
@@ -222,32 +249,32 @@ class WSGI:
                 headers += err.headers
             self.start(self.response.status, headers)
             resp = err.response()
-    
+
         except Exception as err:
             self.logger.exception(err)
             headers = [("Content-Type", "application/json")]
             self.start(STATUSES[500], headers)
             if self.debug:
-                resp = { "error": traceback.format_exc().split("\n")}
+                resp = {"error": traceback.format_exc().split("\n")}
             else:
-                resp = { "error": "Internal server error encountered." }
+                resp = {"error": "Internal server error encountered."}
 
         if self.teardown:
             self.teardown()
-            
+
         if isinstance(resp, (dict, list)):
             try:
                 if self.debug:
                     jresp = json.dumps(resp, indent=4, cls=self.json_cls)
                 else:
                     jresp = json.dumps(resp, cls=self.json_cls)
-            except Exception as err:
+            except Exception:
                 if self.debug:
                     msg = traceback.format_exc().split("\n")
-                    jresp = json.dumps({ "error": msg }, indent=4)
+                    jresp = json.dumps({"error": msg}, indent=4)
                 else:
                     msg = "An unhandled exception occured during response"
-                    jresp = json.dumps({ "error": msg })
+                    jresp = json.dumps({"error": msg})
             self.logger.debug("Sending JSON response: %s", jresp)
             return iter([jresp.encode('utf-8')])
         elif isinstance(resp, str):
@@ -260,7 +287,7 @@ class WSGI:
     def delegate(self):
         path = self.request.path
         method = self.request.method
-                
+
         for pattern, handler in self.routes:
             # Set defaults for handler
             handler.request = self.request
@@ -276,7 +303,7 @@ class WSGI:
                 try:
                     func = getattr(handler, funcname)
                 except AttributeError:
-                    raise errors.HTTP_405("%s not allowed"%(method.upper()))
+                    raise errors.HTTP_405("%s not allowed" % (method.upper()))
 
                 output = func(*args)
 
@@ -284,7 +311,5 @@ class WSGI:
                     handler.after()
 
                 return output
-                               
-        raise errors.HTTP_404("Path %s not found"%(path))
 
-
+        raise errors.HTTP_404("Path %s not found" % (path))

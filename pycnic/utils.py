@@ -9,6 +9,7 @@ if sys.version_info >= (3, 0):
 else:
     from cgi import parse_qsl
 
+
 def query_string_to_dict(qs):
     """ Returns a dictionary from a QUERY_STRING """
 
@@ -17,17 +18,18 @@ def query_string_to_dict(qs):
         return dict(pairs)
     return {}
 
+
 def query_string_to_json(qs):
     """ Returns a dictionary from a QUERY_STRING with JSON in it """
 
     if "json=" not in qs:
         return {}
     data = query_string_to_dict(qs)
-    return json.loads(data.get("json","{}"))
+    return json.loads(data.get("json", "{}"))
 
 
 def requires_validation(validator, with_route_params=False):
-    """ Validates an incoming request over given validator. 
+    """ Validates an incoming request over given validator.
     If with_route_params is set to True, validator is called with request
     data and args taken from route, otherwise only request data is
     passed to validator. If validator raises any Exception, HTTP_400 is raised.
