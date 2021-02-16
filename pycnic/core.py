@@ -119,6 +119,8 @@ class Request(object):
 
         if 'HTTP_COOKIE' in self.environ:
             for cookie_line in self.environ['HTTP_COOKIE'].split(';'):
+                if "=" not in cookie_line:
+                    continue  # malformed cookie
                 if "DELETED" in cookie_line:
                     continue
                 cname, cvalue = cookie_line.strip().split('=', 1)
