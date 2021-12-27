@@ -2,7 +2,7 @@
 
 output="Test results:\n"
 
-for app in bobo_test falcon_test pycnic_test cherrypy_test pyramid_test hug_test flask_test bottle_test tornado_test;
+for app in bobo_test falcon_test pycnic_test cherrypy_test pyramid_test hug_test flask_test bottle_test tornado_test horseman_test;
 do
     echo "TEST: $app"
     if [ "$app" = "tornado_test" ]; then
