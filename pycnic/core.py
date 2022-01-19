@@ -14,7 +14,7 @@ class Handler(object):
     request = None
     response = None
 
-    def options(self):
+    def options(self, *args, **kwargs):
         """Default implementation of OPTIONS method.
 
         Checks which methods are implemented, and sets the Allow header
