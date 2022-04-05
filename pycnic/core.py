@@ -78,7 +78,7 @@ class Request(object):
     def args(self):
         if self._args is not None:
             return self._args
-        qs = self.environ["QUERY_STRING"]
+        qs = self.environ.get("QUERY_STRING", "")
         self._args = utils.query_string_to_dict(qs)
         return self._args
 
@@ -88,7 +88,7 @@ class Request(object):
             return self._json_args
 
         try:
-            qs = self.environ["QUERY_STRING"]
+            qs = self.environ.get("QUERY_STRING", "")
             self._json_args = utils.query_string_to_json(qs)
         except Exception:
             raise errors.HTTP_400("Invalid JSON in request query string")
